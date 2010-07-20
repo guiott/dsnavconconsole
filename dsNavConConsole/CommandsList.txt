@@ -1,0 +1,46 @@
+n/a  C- Motor current value request	
+v D- Setting reference coord. X, Y computing distance [24] Mode C
+v H- Immediate Halt without decelerating ramp	
+n/a I- Id designation. At startup all MCs have Id = 9. -> [14]
+v J- Settings PID coefficients for DistPid: DistKP, DistKI, DistKD
+v K- Speed constant parameters designation: KP, KI, KD
+v k- Settings PID coefficients for AnglePid: AngleKP, AngleKI, AngleKD
+v L- Speed constant parameters designation: Kvel
+v M- Mechanical costants: Axle size, Ksp1, Ksp2
+v O- Reference orientation angle in degrees
+n/a  o- Reference orientation angle in degrees as a delta of the current orientation
+n/a P- Position value request for a single MC
+n/a  V- Measured speed value request in mm/s
+v W- Reference speed setting in mm/s
+v x- Setting reference coordinates X, Y in mm [24] Mode B
+v *- Board reset [28]
+n/a  X- Bot position coordinate request
+
+
+ R- Firmware version request
+		case 'R':		// Firmware version request				// Sende string 'Ver'				for (i=0; i<27; i++)				{			 		UartTmp2Buff[i]=Ver[i]; 				}				Tx2Parameters('R',26);		break;
+
+
+  A- All parameters request: V, C, P
+		case 'A':		// all parameters		// VelMes = Int -> 2 byte (mm/s)				Ptmp = (VelMes[R] + VelMes[L]) >> 1;	// average speed			 	UartTmp2Buff[0]=Ptmp>>8; 				UartTmp2Buff[1]=Ptmp;		// Curr = int -> 2byte (mA)			 	UartTmp2Buff[2]=Curr[IdIndx2]>>8;				UartTmp2Buff[3]=Curr[IdIndx2];		// PosXmes rounded in a Int -> 2 byte (mm)				Ptmp = FLOAT2INT(PosXmes);			 	UartTmp2Buff[4]=Ptmp>>8; 				UartTmp2Buff[5]=Ptmp;		// PosYmes rounded in a Int -> 2 byte (mm)				Ptmp = FLOAT2INT(PosYmes);			 	UartTmp2Buff[6]=Ptmp>>8; 				UartTmp2Buff[7]=Ptmp;		// ThetaMes rounded in a Int -> 2 byte (degrees)				Ptmp = ThetaMes * RAD2DEG;				Alpha = FLOAT2INT(Ptmp);			 	UartTmp2Buff[8]=Alpha>>8; 				UartTmp2Buff[9]=Alpha;				Tx2Parameters('A',10);  
+
+ 
+		bytes_read = ComRd (comport, read_data, 14); 
+
+		controlla @	read_data[0]	
+		n/a		read_data[1]
+		controlla Cmd   read_data[2]
+		controlla CmdLenread_data[3]
+
+		Vel = ((read_data[4] << 8) + (read_data[5]));
+		Current = (read_data[6] << 8) + read_data[7];
+		PosX = (read_data[8] << 8) + read_data[9];
+		PosY = (read_data[10] << 8) + read_data[11];
+		Theta = (read_data[12] << 8) + read_data[13];
+
+                controlla checksum read_data[14]
+
+		if (Theta < 0) Theta = 360-Theta;
+
+
+
