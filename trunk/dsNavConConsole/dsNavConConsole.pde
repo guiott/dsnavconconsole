@@ -4,7 +4,7 @@
 /* Author:    Guido Ottaviani-->g.ottaviani@mediaprogetti.it<--
 ** Description: navigation control board remote consolle  
 -------------------------------------------------------------------------------
-** Compatible with dsPid33 version 2.2.3
+** Compatible with dsPid33 version 2.2.3 
 -------------------------------------------------------------------------------
 Copyright 2010 Guido Ottaviani
 g.ottaviani@mediaprogetti.it
